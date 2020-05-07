@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>d3.js hw1</title>
+    <script type="text/javascript" src="https://mbostock.github.com/d3/d3.js?2.1.3"></script>
+    <script type="text/javascript" src="https://mbostock.github.com/d3/d3.geom.js?2.1.3"></script>
+    <script type="text/javascript" src="https://mbostock.github.com/d3/d3.layout.js?2.1.3"></script>
+
+    <style type="text/css">
+        .slice text {
+            font-size: 10pt;
+            font-family: Arial;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>
+        八仙氣爆傷患受傷程度和即時送醫情況
+    </h1>
+    <script type="text/javascript">
+        var w = 500, //width
+            h = 500, //height
+            r = 200, //radius
+            color = d3.scale.category20(); //builtin range of colors
+
+        data = [{
+            "label": "輕傷",
+            "value": 19.2
+        }, {
+            "label": "中傷",
+            "value": 33.27
+        },{
+            "label": "重傷",
+            "value": 42.97
+        }, {
+            "label": "其他",
+            "value": 4.56
+        }];
+
+        var vis = d3.select("body")
+            .append("svg:svg") //create the SVG element inside the <body>
+            .data([data]) //associate our data with the document
+            .attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
+            .attr("height", h)
+            .append("svg:g") //make a group to hold our pie chart
+            .attr("transform", "translate(" + r + "," + r + ")") //move the center of the pie chart from 0, 0 to radius, radius
+
+        var arc = d3.svg.arc() //this will create <path> elements for us using arc data
+            .outerRadius(r);
+
+        var pie = d3.layout.pie() //this will create arc data for us given a list of values
+            .value(function(d) {
+                return d.value;
+            }); //we must tell it out to access the value of each element in our data array
+
+        var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
+            .data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+            .enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+            .append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+            .attr("class", "slice"); //allow us to style things in the slices (like text)
+
+        arcs.append("svg:path")
+            .attr("fill", function(d, i) {
+                return color(i);
+            }) //set the color for each slice to be chosen from the color function defined above
+            .attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+
+        arcs.append("svg:text") //add a label to each slice
+            .attr("transform", function(d) { //set the label's origin to the center of the arc
+                //we have to make sure to set these before calling arc.centroid
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")"; //this gives us a pair of coordinates like [50, 50]
+            })
+            .attr("text-anchor", "middle") //center the text on it's origin
+            .text(function(d, i) {
+                return data[i].label + ":"+data[i].value+"%";
+            }); //get the label from our original data array
+    </script>
+    <script type="text/javascript">
+        var w = 500, //width
+            h = 500, //height
+            r = 200, //radius
+            color = d3.scale.category20(); //builtin range of colors
+
+        data = [{
+            "label": "加護病房",
+            "value": 236
+        }, {
+            "label": "一般病房",
+            "value": 119
+        },{
+            "label": "出院",
+            "value": 105
+        }, {
+            "label": "其他",
+            "value": 64
+        }, {
+            "label": "死亡",
+            "value": 2
+        }];
+// 236 一班病房119 出院105 其他48 自動出院AAD 9 轉院7 死亡2(及時動向
+        var vis = d3.select("body")
+            .append("svg:svg") //create the SVG element inside the <body>
+            .data([data]) //associate our data with the document
+            .attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
+            .attr("height", h)
+            .append("svg:g") //make a group to hold our pie chart
+            .attr("transform", "translate(" + r + "," + r + ")") //move the center of the pie chart from 0, 0 to radius, radius
+
+        var arc = d3.svg.arc() //this will create <path> elements for us using arc data
+            .outerRadius(r);
+
+        var pie = d3.layout.pie() //this will create arc data for us given a list of values
+            .value(function(d) {
+                return d.value;
+            }); //we must tell it out to access the value of each element in our data array
+
+        var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
+            .data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+            .enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+            .append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+            .attr("class", "slice"); //allow us to style things in the slices (like text)
+
+        arcs.append("svg:path")
+            .attr("fill", function(d, i) {
+                return color(i);
+            }) //set the color for each slice to be chosen from the color function defined above
+            .attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+
+        arcs.append("svg:text") //add a label to each slice
+            .attr("transform", function(d) { //set the label's origin to the center of the arc
+                //we have to make sure to set these before calling arc.centroid
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")"; //this gives us a pair of coordinates like [50, 50]
+            })
+            .attr("text-anchor", "middle") //center the text on it's origin
+            .text(function(d, i) {
+                return data[i].label + ":"+data[i].value+"";
+            }); //get the label from our original data array
+    </script>
+    <p>這張圖顯示了當年八仙塵爆的傷患受傷程度情況以及他們後續送醫的結果，由此圖可以看出當年受重傷以及送到加護病房的人其實非常多，中傷的比例也不低，可以說
+        光是中傷跟重傷就佔了75%，而進了加護病房的人也幾乎要有一半，可以說情況是非常嚴重。
+    </p>
+    <p>資料來源：https://data.taipei/#/dataset/detail?id=42e28465-b4b0-4637-85b7-4114126152b1</p>
+</body>
+
+
+</html>
