@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/earlyaccess/notosanstc.css');
+body {
+    font-family: 'Noto Sans TC', sans-serif;
+    /* color: #604c3f; */
+    color: red;
+}
+
+#circle {
+    color: red;
+    font-family: 'Noto Sans TC', sans-serif;
+    /* color: #604c3f;} */
+}
+
+.domain {
+    fill: #9b8a81;
+}
